@@ -64,11 +64,6 @@
         }
       ],
       "expo-secure-store"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "bpdb-pension-verification-proj"
-      }
-    }
+    ]
   }
 }
