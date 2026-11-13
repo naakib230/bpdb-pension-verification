@@ -1,6 +1,7 @@
 {
   "name": "bpdb-pension-verification",
   "version": "1.0.0",
+  "packageManager": "pnpm@11.19.0",
   "description": "BPDB Pensioner Biometric and Face Verification Cross-Platform Mobile Application",
   "main": "index.ts",
   "scripts": {
