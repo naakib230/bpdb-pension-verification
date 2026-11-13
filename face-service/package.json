@@ -1,0 +1,15 @@
+{
+  "name": "bpdb-face-verification-service",
+  "version": "1.0.0",
+  "description": "100% Free Open-Source Face Verification Microservice for BPDB Pensioners using @vladmandic/human and face-api.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@vladmandic/human": "^3.2.3",
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
+  }
+}
