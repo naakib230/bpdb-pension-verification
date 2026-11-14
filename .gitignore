@@ -28,6 +28,7 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 pnpm-debug.log*
+check_build.js
 
 # OS
 .DS_Store
