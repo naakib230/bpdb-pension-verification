@@ -17,6 +17,7 @@ import {
   enrollFingerprint,
   verifyFingerprintMonthly,
 } from '../services/biometricService';
+import { checkLocalEnrollment } from '../services/historyService';
 
 interface FingerprintVerificationScreenProps {
   pensioner: Pensioner;
@@ -44,9 +45,13 @@ export const FingerprintVerificationScreen: React.FC<FingerprintVerificationScre
     async function checkSupport() {
       const result = await checkBiometricSupport();
       setHasHardware(result.hasHardware);
+      const isLocal = await checkLocalEnrollment(pensioner.pension_id);
+      if (isLocal || pensioner.biometric_enrolled) {
+        setIsDeviceEnrolled(true);
+      }
     }
     checkSupport();
-  }, []);
+  }, [pensioner.pension_id, pensioner.biometric_enrolled]);
 
   const handleEnrollAndVerify = async () => {
     setLoading(true);
@@ -85,7 +90,7 @@ export const FingerprintVerificationScreen: React.FC<FingerprintVerificationScre
     try {
       setStatusMessage(t.promptVerifying);
       const verifyResult = await verifyFingerprintMonthly(
-        pensioner.pension_id,
+        pensioner,
         currentLanguage === 'bn'
           ? 'বিপিডিবি মাসিক পেনশন যাচাইয়ে সেন্সরে আঙুল রাখুন'
           : 'Place registered finger on sensor for BPDB monthly pension verification'

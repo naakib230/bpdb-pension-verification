@@ -11,7 +11,7 @@ import { THEME } from '../constants/theme';
 import { TRANSLATIONS } from '../constants/translations';
 import { Language, Pensioner, VerificationLog } from '../types';
 import { Header } from '../components/Header';
-import { supabase } from '../lib/supabase';
+import { getVerificationHistory } from '../services/historyService';
 
 interface DashboardScreenProps {
   pensioner: Pensioner;
@@ -43,30 +43,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   const fetchRecentLogs = async () => {
     try {
-      const { data, error } = await supabase
-        .from('verification_logs')
-        .select('*')
-        .eq('pension_id', pensioner.pension_id)
-        .order('verified_at', { ascending: false })
-        .limit(3);
-
-      if (data && !error) {
-        setRecentLogs(data as VerificationLog[]);
-      } else {
-        // Fallback sample log for preview
-        setRecentLogs([
-          {
-            id: 'sample-log-1',
-            pensioner_id: pensioner.id,
-            pension_id: pensioner.pension_id,
-            verification_method: 'fingerprint',
-            verification_status: 'approved',
-            confidence_score: 1.0,
-            location_address: 'Dhaka, Bangladesh',
-            verified_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-          },
-        ]);
-      }
+      const allLogs = await getVerificationHistory(pensioner.pension_id);
+      setRecentLogs(allLogs.slice(0, 3));
     } catch {
       // Offline fallback
     }

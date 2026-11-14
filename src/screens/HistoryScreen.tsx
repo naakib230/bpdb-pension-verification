@@ -11,7 +11,7 @@ import { THEME } from '../constants/theme';
 import { TRANSLATIONS } from '../constants/translations';
 import { Language, Pensioner, VerificationLog } from '../types';
 import { Header } from '../components/Header';
-import { supabase } from '../lib/supabase';
+import { getVerificationHistory } from '../services/historyService';
 
 interface HistoryScreenProps {
   pensioner: Pensioner;
@@ -33,43 +33,8 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
 
   const fetchLogs = async () => {
     try {
-      const { data, error } = await supabase
-        .from('verification_logs')
-        .select('*')
-        .eq('pension_id', pensioner.pension_id)
-        .order('verified_at', { ascending: false });
-
-      if (data && !error && data.length > 0) {
-        setLogs(data as VerificationLog[]);
-      } else {
-        // Fallback sample audit records
-        setLogs([
-          {
-            id: 'log-1',
-            pensioner_id: pensioner.id,
-            pension_id: pensioner.pension_id,
-            verification_method: 'fingerprint',
-            verification_status: 'approved',
-            confidence_score: 1.0,
-            latitude: 23.8103,
-            longitude: 90.4125,
-            location_address: 'Motijheel, Dhaka, Bangladesh',
-            verified_at: new Date().toISOString(),
-          },
-          {
-            id: 'log-2',
-            pensioner_id: pensioner.id,
-            pension_id: pensioner.pension_id,
-            verification_method: 'face',
-            verification_status: 'approved',
-            confidence_score: 0.934,
-            latitude: 23.8103,
-            longitude: 90.4125,
-            location_address: 'Dhaka Power Division, Bangladesh',
-            verified_at: new Date(Date.now() - 86400000 * 30).toISOString(),
-          },
-        ]);
-      }
+      const data = await getVerificationHistory(pensioner.pension_id);
+      setLogs(data);
     } catch (err) {
       console.warn('Fetch logs error:', err);
     } finally {
